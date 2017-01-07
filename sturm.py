@@ -3,7 +3,7 @@ import constants
 
 def main():
 	print_intro()
-	roster = load_roster()
+	roster = load_roster("test_roster.txt")
 
 	while True:
 		display_menu()
@@ -31,13 +31,30 @@ def enter_scores(roster):
 	print "Example: 5.4/14.2 6.0/4.5 0 0 4.2/13.1 5.0/13.5 \n"
 
 	for name in roster:
-		scores = raw_input("%s: " % (name))
+		scores = raw_input("%s: " % (name)).split()
+		while True:
+			if len(scores) != constants.NUM_EVENTS:
+				print "ERROR: You must enter %d scores. You entered %d scores." % (constants.NUM_EVENTS, len(scores))
+			else:
+				correct_format = True
+				for score in scores:
+					if score != '0' and score.find('/') == -1:
+						correct_format = False
+						break
+
+				if correct_format == True:
+					break
+				else:
+					print "ERROR: One of the scores entered was not in the correct format: start_value/score or 0"
+
+			scores = raw_input("%s: " % (name)).split()
+
 		# parsed_scores = parse_scores(scores)
 		# update_athlete(roster, name, parsed_scores)
 
 
-def load_roster():
-	file = open("roster.txt", 'r')
+def load_roster(roster_name):
+	file = open(roster_name, 'r')
 	roster = {}
 
 	for line in file:
