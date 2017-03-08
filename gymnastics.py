@@ -7,11 +7,11 @@ import constants
 def main():
 	data = load_roster("./data/roster.txt")
 	load_data("./data/data.txt", data)
-	choice = display_menu(constants.MAIN_MENU_TEXT, constants.MAIN_MENU_OPTIONS)
+	choice = display_menu(constants.MAIN_MENU_TEXT, constants.MAIN_MENU_PROMPT, constants.MAIN_MENU_OPTIONS)
 
 	while (choice != constants.QUIT):
-		perform_task(choice)
-		choice = display_menu(constants.MAIN_MENU_TEXT, constants.MAIN_MENU_OPTIONS)
+		perform_task(choice, data)
+		choice = display_menu(constants.MAIN_MENU_TEXT, constants.MAIN_MENU_PROMPT, constants.MAIN_MENU_OPTIONS)
 
 	print "\nHave a nice day!"
 
@@ -19,27 +19,54 @@ def main():
 # This function is the main directory to all the of statistical functions
 # in the program
 # 
-# Input: choice - the users choice from the main menu
+# Input: choice - the users choice from the main menu, data - all the routine
+# 		 data
 # Output: performs task
-def perform_task (choice):
+def perform_task (choice, data):
 	if choice == constants.INDIVIDUAL:
-		print "Not yet implemented\n"
+		name = display_menu(constants.INDIVIDUAL_MENU_TEXT, constants.INDIVIDUAL_MENU_PROMPT, data)
+		individual_summary(name, data)
+		# athlete_summary(name)
 	elif choice == constants.TEAM:
 		print "Not yet implemented\n"
 		# team_menu()
 
+def individual_summary(name, data):
+	sorted_events = sort_by_event(data[name])
+
+	for event in sorted_events:
+		print event
+		for routine in sorted_events[event]:
+			print routine.score
+	# event_means = calc_means(sorted_events)
+	# event_medians = calc_medians(sorted_events)
+	# hit_percentages = calc_hit_percentages(sorted_events)
+	# extrema = calc_extrema(sorted_events)
+
+
+def sort_by_event(routines): 
+	# map from event name to routines
+	sorted_events = {"FX": [], "PH": [], "SR": [], "VT": [], "PB": [], "HB": []}
+
+	for routine in routines:
+		sorted_events[routine.event].append(routine)
+
+	return sorted_events
+
+
 # Function: display_menu
 # This function displays a menu and asks the user for an input choice 
 #
-# Input: script - a string with the menu options, valid_options - an 
-# 		 array of all the valid menu options to choose from
+# Input: script - a string with the menu options, prompt - the question
+# 		 asked of the user. valid_options - an array of all the valid menu 
+# 		 options to choose from
 # Output: returns the user choice 
-def display_menu(script, valid_options):
+def display_menu(script, prompt, valid_options):
 	print script
-	choice = raw_input("Enter an menu option: ")
+	choice = raw_input(prompt)
 
 	while choice not in valid_options:
-		choice = raw_input("Error. Enter a valid menu option: ")
+		choice = raw_input("Error. Enter a valid option: ")
 
 	return choice
 
